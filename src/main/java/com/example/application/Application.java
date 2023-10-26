@@ -3,6 +3,7 @@ package com.example.application;
 import com.example.application.services.BookingTools;
 import com.example.application.services.CustomerSupportAgent;
 import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.theme.Theme;
 import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
@@ -40,6 +41,7 @@ import static dev.langchain4j.model.openai.OpenAiModelName.GPT_4;
  */
 @SpringBootApplication
 @Theme(value = "customer-support-agent")
+@Push
 public class Application implements AppShellConfigurator {
 
     public static void main(String[] args) {

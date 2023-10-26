@@ -3,11 +3,11 @@ package com.example.application.client;
 import com.example.application.services.BookingDetails;
 import com.example.application.services.CarRentalService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import dev.hilla.BrowserCallable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@BrowserCallable
+@Service
 @AnonymousAllowed
 public class BookingService {
     private final CarRentalService carRentalService;
