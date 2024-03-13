@@ -11,7 +11,7 @@ this demo simply expands on it by adding a React UI and a database.
 
 ## Requirements
 - Java 17+
-- OpenAI API key in `OPENAI_API_KEY` environment variable
+- OpenAI API key in `OPENAI_API_KEY` environment variable. Create your API key here: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 
 ## Running
 Run the app by running `Application.java` in your IDE or `mvn` in the command line.
