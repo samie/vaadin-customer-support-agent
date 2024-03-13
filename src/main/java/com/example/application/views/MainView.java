@@ -58,9 +58,13 @@ public class MainView extends SplitLayout {
         MessageListItem assistantReply = createMessage(" ", "Assistant", 2);
         addItem(this.messageList, userInput,assistantReply);
         assistantService.chat(this.chatId, submitEvent.getValue()).subscribe(token -> appendToLastMessage(messageList, token));
+        refreshGrid();
     }
 
-
+    private void refreshGrid() {
+        grid.getDataProvider().refreshAll();
+        //TODO: Use more granular refresh for big grids grid.getDataProvider().refreshItem(item);
+    }
 
     private void configureGrid(Grid<BookingDetails> grid) {
         grid.addColumn(BookingDetails::bookingNumber);
