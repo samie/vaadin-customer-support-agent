@@ -31,6 +31,7 @@ public class MainView extends SplitLayout {
             .withComponent(messageInput);
     Grid<BookingDetails> grid = new Grid(BookingDetails.class);
     private String chatId = UUID.randomUUID().toString();
+    private MarkdownMessage assistantMsg;
 
     public MainView(
             @Autowired BookingService bookingService,
@@ -55,18 +56,25 @@ public class MainView extends SplitLayout {
     }
 
     private void chat(MessageInput.SubmitEvent submitEvent) {
-        MarkdownMessage customerMsg = new MarkdownMessage(submitEvent.getValue(), "Customer", 1);
-        var assistantMsg = new MarkdownMessage("Assistant", 2);
+        String question = submitEvent.getValue();
+        addQuestionToList(question);
+        streamResponse(question);
+        refreshGrid();
+    }
+
+    private void streamResponse(String question) {
+        assistantService.chat(this.chatId, question)
+                .subscribe(token -> assistantMsg.appendMarkdownAsync(token));
+    }
+
+    private void addQuestionToList(String question) {
+        var customerMsg = new MarkdownMessage(question, "Customer", 1);
+        assistantMsg = new MarkdownMessage("Assistant", 2);
         messageList.add(
                 customerMsg,
                 assistantMsg
         );
         assistantMsg.scrollIntoView();
-
-        assistantService.chat(this.chatId, submitEvent.getValue())
-                .subscribe(token -> assistantMsg.appendMarkdownAsync(token));
-
-        refreshGrid();
     }
 
     private void refreshGrid() {
