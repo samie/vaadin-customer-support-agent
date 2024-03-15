@@ -5,13 +5,13 @@ import com.example.application.client.BookingService;
 import com.example.application.services.BookingDetails;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.messages.MessageInput;
-import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.firitin.components.messagelist.MarkdownMessage;
+import org.vaadin.firitin.components.messagelist.MarkdownMessage.Color;
 import org.vaadin.firitin.components.orderedlayout.VScroller;
 import org.vaadin.firitin.components.orderedlayout.VVerticalLayout;
 
@@ -68,8 +68,8 @@ public class MainView extends SplitLayout {
     }
 
     private void addQuestionToList(String question) {
-        var customerMsg = new MarkdownMessage(question, "Customer", 1);
-        assistantMsg = new MarkdownMessage("Assistant", 2);
+        var customerMsg = new MarkdownMessage(question, "Customer", Color.AVATAR_PRESETS[1]);
+        assistantMsg = new MarkdownMessage("Assistant", Color.AVATAR_PRESETS[1]);
         messageList.add(
                 customerMsg,
                 assistantMsg
