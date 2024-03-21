@@ -77,7 +77,7 @@ public class Application implements AppShellConfigurator {
         return args -> {
             Resource resource =
                     resourceLoader.getResource("classpath:terms-of-service.txt");
-            var termsOfUse = loadDocument(resource.getFile().toPath(), new TextDocumentParser());
+            var termsOfUse = FileSystemDocumentLoader.loadDocument(resource.getFile().toPath(), new TextDocumentParser());
 
             DocumentSplitter documentSplitter = DocumentSplitters.recursive(100, 0,
                     tokenizer);
