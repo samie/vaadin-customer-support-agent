@@ -5,19 +5,17 @@ import com.example.application.client.BookingService;
 import com.example.application.services.BookingDetails;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.messages.MessageInput;
-import com.vaadin.flow.component.messages.MessageList;
-import com.vaadin.flow.component.messages.MessageListItem;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.firitin.components.messagelist.MarkdownMessage;
+import org.vaadin.firitin.components.messagelist.MarkdownMessage.Color;
+import org.vaadin.firitin.components.orderedlayout.VScroller;
+import org.vaadin.firitin.components.orderedlayout.VVerticalLayout;
 
 import java.util.UUID;
-
-import static com.example.application.MessageListUtil.addItem;
-import static com.example.application.MessageListUtil.createMessage;
-import static com.example.application.MessageListUtil.appendToLastMessage;
 
 @PageTitle("Bookings")
 @Route("")
@@ -25,11 +23,15 @@ public class MainView extends SplitLayout {
 
     private final AssistantService assistantService;
     private final BookingService bookingService;
-    MessageList messageList = new MessageList();
+    VerticalLayout messageList = new VVerticalLayout()
+            .withSpacing(false);
     MessageInput messageInput = new MessageInput();
-    VerticalLayout chat = new VerticalLayout(messageList,messageInput);
+    VerticalLayout chat = new VVerticalLayout()
+            .withExpanded(new VScroller(messageList))
+            .withComponent(messageInput);
     Grid<BookingDetails> grid = new Grid(BookingDetails.class);
     private String chatId = UUID.randomUUID().toString();
+    private MarkdownMessage assistantMsg;
 
     public MainView(
             @Autowired BookingService bookingService,
@@ -37,7 +39,7 @@ public class MainView extends SplitLayout {
 
         this.assistantService = assistantService;
         this.bookingService = bookingService;
-        
+
         addToPrimary(chat);
         addToSecondary(grid);
         setSplitterPosition(30);
@@ -54,11 +56,25 @@ public class MainView extends SplitLayout {
     }
 
     private void chat(MessageInput.SubmitEvent submitEvent) {
-        MessageListItem userInput = createMessage(submitEvent.getValue(), "Customer", 1);
-        MessageListItem assistantReply = createMessage(" ", "Assistant", 2);
-        addItem(this.messageList, userInput,assistantReply);
-        assistantService.chat(this.chatId, submitEvent.getValue()).subscribe(token -> appendToLastMessage(messageList, token));
+        String question = submitEvent.getValue();
+        addQuestionToList(question);
+        streamResponse(question);
         refreshGrid();
+    }
+
+    private void streamResponse(String question) {
+        assistantService.chat(this.chatId, question)
+                .subscribe(token -> assistantMsg.appendMarkdownAsync(token));
+    }
+
+    private void addQuestionToList(String question) {
+        var customerMsg = new MarkdownMessage(question, "Customer", Color.AVATAR_PRESETS[1]);
+        assistantMsg = new MarkdownMessage("Assistant", Color.AVATAR_PRESETS[1]);
+        messageList.add(
+                customerMsg,
+                assistantMsg
+        );
+        assistantMsg.scrollIntoView();
     }
 
     private void refreshGrid() {
@@ -75,5 +91,6 @@ public class MainView extends SplitLayout {
         grid.addColumn(BookingDetails::bookingStatus);
         grid.setItems(bookingService.getBookings());
     }
+
 
 }

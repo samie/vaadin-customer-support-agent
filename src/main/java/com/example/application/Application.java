@@ -7,6 +7,7 @@ import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.theme.Theme;
 import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
+import dev.langchain4j.data.document.parser.TextDocumentParser;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.chat.TokenWindowChatMemory;
@@ -29,12 +30,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import dev.langchain4j.data.document.parser.TextDocumentParser;
 
-import java.io.IOException;
-
-import static dev.langchain4j.model.openai.OpenAiModelName.GPT_4;
-
+import static dev.langchain4j.model.openai.OpenAiChatModelName.GPT_4;
 
 /**
  * This example is from https://github.com/langchain4j/langchain4j-examples/tree/main/spring-boot-example,
@@ -73,7 +70,7 @@ public class Application implements AppShellConfigurator {
             EmbeddingStore<TextSegment> embeddingStore,
             Tokenizer tokenizer,
             ResourceLoader resourceLoader
-    ) throws IOException {
+    ) {
         return args -> {
             Resource resource =
                     resourceLoader.getResource("classpath:terms-of-service.txt");
