@@ -4,7 +4,9 @@ import com.example.application.client.AssistantService;
 import com.example.application.client.BookingService;
 import com.example.application.services.BookingDetails;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.messages.MessageInput;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -12,8 +14,6 @@ import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.firitin.components.messagelist.MarkdownMessage;
 import org.vaadin.firitin.components.messagelist.MarkdownMessage.Color;
-import org.vaadin.firitin.components.orderedlayout.VScroller;
-import org.vaadin.firitin.components.orderedlayout.VVerticalLayout;
 
 import java.util.UUID;
 
@@ -23,12 +23,9 @@ public class MainView extends SplitLayout {
 
     private final AssistantService assistantService;
     private final BookingService bookingService;
-    VerticalLayout messageList = new VVerticalLayout()
-            .withSpacing(false);
+    Scroller messageList = new Scroller(new Div());
     MessageInput messageInput = new MessageInput();
-    VerticalLayout chat = new VVerticalLayout()
-            .withExpanded(new VScroller(messageList))
-            .withComponent(messageInput);
+    VerticalLayout chat = new VerticalLayout(messageList,messageInput);
     Grid<BookingDetails> grid = new Grid(BookingDetails.class);
     private String chatId = UUID.randomUUID().toString();
     private MarkdownMessage assistantMsg;
@@ -43,9 +40,9 @@ public class MainView extends SplitLayout {
         addToPrimary(chat);
         addToSecondary(grid);
         setSplitterPosition(30);
-        setHeightFull();
-        setWidthFull();
+        setSizeFull();
 
+        chat.setPadding(false);
         messageList.setSizeFull();
         messageInput.setWidthFull();
         messageInput.addSubmitListener(this::chat);
@@ -70,10 +67,7 @@ public class MainView extends SplitLayout {
     private void addQuestionToList(String question) {
         var customerMsg = new MarkdownMessage(question, "Customer", Color.AVATAR_PRESETS[1]);
         assistantMsg = new MarkdownMessage("Assistant", Color.AVATAR_PRESETS[1]);
-        messageList.add(
-                customerMsg,
-                assistantMsg
-        );
+        ((Div)messageList.getContent()).add(customerMsg, assistantMsg);
         assistantMsg.scrollIntoView();
     }
 
